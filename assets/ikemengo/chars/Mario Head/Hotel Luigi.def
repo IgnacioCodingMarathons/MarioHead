@@ -1,0 +1,25 @@
+;***************************************************************************;
+;******************* Created in Fighter Factory Ultimate *******************;
+;*******************      http://www.virtualltek.com     *******************;
+;***************************************************************************;
+
+[Info]
+name = "Mario's Head"
+displayname = "Mario Head"
+versiondate = 11/24/2010
+mugenversion = 
+author = "Marcioleo123"
+pal.defaults = 1
+
+[Files]
+sprite = luigi.sff
+anim = luigi.air
+sound = luigi.snd
+cmd = luigi.cmd
+cns = luigi.cns
+stcommon = common1.cns
+st = luigi.cns
+
+[Arcade]
+intro.storyboard = 
+ending.storyboard = 

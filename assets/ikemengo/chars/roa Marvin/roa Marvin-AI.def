@@ -1,0 +1,42 @@
+
+
+[Info]
+name         = "Rivals of aether Marvin"   
+displayname  = "Marvin"  
+versiondate  = 1.0           
+mugenversion = 1.0           
+author       = "Your name"   
+pal.defaults = 1,2,3,4,5,6   
+localcoord   = 320,240       
+
+
+[Files]
+cmd = roa Marvin-AI.cmd
+cns = roa Marvin-AI.cns
+st = roa Marvin-AI.cns
+st0 = aisummary.txt
+stcommon = common1.cns       
+sprite   = roa Marvin.sff          
+anim     = roa Marvin.air          
+sound    = roa Marvin.snd          
+ai       = roa Marvin.ai           
+
+
+[Palette Keymap]
+x  = 1 
+y  = 2
+z  = 3
+a  = 1
+b  = 2
+c  = 3
+x2 = 4 
+y2 = 5
+z2 = 6
+a2 = 4
+b2 = 5
+c2 = 6
+
+
+[Arcade]
+
+;ending.storyboard = ending.def

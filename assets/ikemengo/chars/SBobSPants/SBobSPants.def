@@ -1,0 +1,30 @@
+
+[Info]
+name = "SpongeBob Squarepants"        ;Name of character
+displayname = "SpongeBob" ;Name of character to display
+;versiondate =    ;Version date of character
+mugenversion = 06,14,2003 ;Version of M.U.G.E.N character works on
+author = "LouisDoesMUGEN1978"      ;Character author name
+pal.defaults = 1,2  ;Default palettes in order of preference
+
+; Files for the player
+[Files]
+cmd     = Command/player.cmd   ;Command set
+cns     = Consoles/player.cns   ;Constants
+st      = Consoles/player.cns   ;States
+stcommon = common1.cns ;Common states
+sprite  = Sprites/player.sff   ;Sprite
+anim    = Animation/player.air   ;Animation
+sound  = Sounds/player.snd   ;Sound
+pal1   = Palletes/spongebob.act   ;Palettes (can have up to 12)
+pal2   = Palletes/blue.act
+pal3   = Palletes/red.act
+pal4   = Palletes/green.act
+pal5   = Palletes/pink.act
+pal6   = Palletes/smurf.act
+pal7   = Palletes/MOC1105.act
+pal8   = Palletes/patrick.act
+pal9   = Palletes/squidward.act
+pal10  = Palletes/mrkrabs.act
+pal11  = Palletes/plankton.act
+pal12  = Palletes/flyingdutchman.act

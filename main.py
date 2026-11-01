@@ -80,12 +80,30 @@ BORDER_BOUNCES_BEFORE_FIGHT = 50
 IKEMEN_DIR = ASSETS / "ikemengo"
 CHASE_SECONDS = 30.0
 CHASE_SPEED = 1650.0
-INFO_SOUND_CANDIDATES = (
-    Path("/usr/share/sounds/freedesktop/stereo/message.oga"),
-    Path("/usr/share/sounds/freedesktop/stereo/dialog-information.oga"),
-    Path("/usr/share/sounds/freedesktop/stereo/complete.oga"),
-    Path("/usr/share/sounds/ubuntu/stereo/dialog-information.ogg"),
-)
+INFO_SOUND_CANDIDATES = {
+    "linux": (
+        Path("/usr/share/sounds/freedesktop/stereo/message.oga"),
+        Path("/usr/share/sounds/freedesktop/stereo/dialog-information.oga"),
+        Path("/usr/share/sounds/freedesktop/stereo/complete.oga"),
+        Path("/usr/share/sounds/ubuntu/stereo/dialog-information.ogg"),
+    ),
+    "darwin": (
+        Path("/System/Library/Sounds/Glass.aiff"),
+        Path("/System/Library/Sounds/Hero.aiff"),
+    ),
+}
+ERROR_SOUND_CANDIDATES = {
+    "linux": (
+        Path("/usr/share/sounds/Oxygen-Sys-App-Error-Critical.ogg"),
+        Path("/usr/share/sounds/freedesktop/stereo/dialog-error.oga"),
+        Path("/usr/share/sounds/freedesktop/stereo/dialog-error.ogg"),
+        Path("/usr/share/sounds/ubuntu/stereo/dialog-error.ogg"),
+    ),
+    "darwin": (
+        Path("/System/Library/Sounds/Basso.aiff"),
+        Path("/System/Library/Sounds/Sosumi.aiff"),
+    ),
+}
 
 
 def ikemen_executable() -> Path:
@@ -652,13 +670,7 @@ class MarioHead:
 
     @staticmethod
     def _load_critical_sound() -> pygame.mixer.Sound | None:
-        """Preload the desktop's error sound so a bounce can play it immediately."""
-        candidates = (
-            Path("/usr/share/sounds/Oxygen-Sys-App-Error-Critical.ogg"),
-            Path("/usr/share/sounds/freedesktop/stereo/dialog-error.oga"),
-            Path("/usr/share/sounds/freedesktop/stereo/dialog-error.ogg"),
-            Path("/usr/share/sounds/ubuntu/stereo/dialog-error.ogg"),
-        )
+        candidates = ERROR_SOUND_CANDIDATES.get(sys.platform, ())
         for path in candidates:
             if path.is_file():
                 try:
@@ -666,6 +678,38 @@ class MarioHead:
                 except pygame.error:
                     continue
         return None
+
+    def _play_critical_sound(self) -> None:
+        if self.critical_sound is not None:
+            self.critical_sound.play()
+            return
+        if sys.platform == "win32":
+            try:
+                import winsound
+                winsound.PlaySound(
+                    "SystemHand", winsound.SND_ALIAS | winsound.SND_ASYNC
+                )
+            except (ImportError, RuntimeError):
+                try:
+                    winsound.MessageBeep(winsound.MB_ICONHAND)
+                except (NameError, RuntimeError):
+                    pass
+        elif sys.platform == "darwin":
+            sound_path = next(
+                (path for path in ERROR_SOUND_CANDIDATES["darwin"] if path.is_file()),
+                None,
+            )
+            player = shutil.which("afplay")
+            if sound_path is not None and player is not None:
+                try:
+                    subprocess.Popen(
+                        [player, str(sound_path)],
+                        stdin=subprocess.DEVNULL,
+                        stdout=subprocess.DEVNULL,
+                        stderr=subprocess.DEVNULL,
+                    )
+                except OSError:
+                    pass
 
     def _launch_decoder(self, key: str) -> subprocess.Popen:
         source = ASSETS / CLIP_SOURCES[key]
@@ -1721,17 +1765,47 @@ class MarioHead:
         }
 
     def _play_information_sound_after_shutdown(self) -> None:
-        sound_path = next((path for path in INFO_SOUND_CANDIDATES if path.is_file()), None)
-        player = shutil.which("ffplay")
-        if sound_path is None:
+        if sys.platform == "win32":
+            try:
+                import winsound
+
+                winsound.PlaySound("SystemAsterisk", winsound.SND_ALIAS)
+            except (ImportError, RuntimeError):
+                try:
+                    winsound.MessageBeep(winsound.MB_ICONASTERISK)
+                except (NameError, RuntimeError):
+                    pass
             return
-        if player is not None:
-            command = [player, "-nodisp", "-autoexit", "-loglevel", "quiet", str(sound_path)]
-        else:
-            player = shutil.which("paplay")
+
+        platform_key = "darwin" if sys.platform == "darwin" else "linux"
+        candidates = INFO_SOUND_CANDIDATES.get(platform_key, ())
+        sound_path = next((path for path in candidates if path.is_file()), None)
+        if sound_path is None:
+            if sys.platform == "darwin":
+                osascript = shutil.which("osascript")
+                if osascript is not None:
+                    subprocess.run(
+                        [osascript, "-e", "beep 1"],
+                        stdin=subprocess.DEVNULL,
+                        stdout=subprocess.DEVNULL,
+                        stderr=subprocess.DEVNULL,
+                        check=False,
+                    )
+            return
+        if sys.platform == "darwin":
+            player = shutil.which("afplay")
             if player is None:
                 return
             command = [player, str(sound_path)]
+        else:
+            player = shutil.which("ffplay")
+            if player is not None:
+                command = [player, "-nodisp", "-autoexit", "-loglevel", "quiet", str(sound_path)]
+            else:
+                player = shutil.which("paplay")
+                if player is None:
+                    return
+                command = [player, str(sound_path)]
         subprocess.run(
             command,
             stdin=subprocess.DEVNULL,
@@ -1830,8 +1904,8 @@ class MarioHead:
             self.window_y, self.velocity_y, delta_seconds, max_y
         )
         bounce_hits = hits_x + hits_y
-        if bounce_hits and self.critical_sound is not None:
-            self.critical_sound.play()
+        if bounce_hits:
+            self._play_critical_sound()
         if bounce_hits:
             if self.loss_bouncing:
                 self.loss_bounce_count += bounce_hits

@@ -1,7 +1,3 @@
-"""Play Mario's clips in an app-owned window and ask the viewer a question."""
-
-from __future__ import annotations
-
 import shutil
 import atexit
 import ctypes

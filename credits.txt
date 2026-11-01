@@ -1,3 +1,7 @@
 background music: Vs. Patrick by QuietRiot (@QuietRiot5475)
 mario head videos: avi files ripped from mario teaches typing 2 iso, with some having slight edits in kdenlive
 ikemen go by Suehiro and more (read assets/ikemengo/LICENSES.txt for more details)
+mugen characters included (mugenarchive.com):
+- Marvin (rivals of aether): made by mudkid and uploaded by gajus2012
+- SpongeBob Squarepants: made by LouisDoesMUGEN1978 and uploaded by JustARandomUploader
+- Mario Head: made and uploaded by marcioleo123

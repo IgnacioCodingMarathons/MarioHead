@@ -1,4 +1,8 @@
 background music: Vs. Patrick by QuietRiot (@QuietRiot5475)
+chase background music:
+    "Cloud Dancer" Kevin MacLeod (incompetech.com)
+    Licensed under Creative Commons: By Attribution 4.0 License
+    http://creativecommons.org/licenses/by/4.0/
 mario head videos: avi files ripped from mario teaches typing 2 iso, with some having slight edits in kdenlive
 ikemen go by Suehiro and more (read assets/ikemengo/LICENSES.txt for more details)
 mugen characters included (mugenarchive.com):
